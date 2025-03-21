@@ -6,6 +6,9 @@ export default function Dashboard() {
       <Link href="/add-product" className="add-product-btn">
         Ürün ekle
       </Link>
+      <Link href="/sales-reports" className="sales-reports-btn">
+        Satış raporları
+      </Link>
     </div>
   );
 }
