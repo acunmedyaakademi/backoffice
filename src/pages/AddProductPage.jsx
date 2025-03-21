@@ -11,7 +11,8 @@ export default function AddProductPage() {
     category_id: ''
   });
   const [imageFile, setImageFile] = useState(null);
-  
+  const [previewUrl, setPreviewUrl] = useState(null);
+
   useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase.from('categories').select('id, name');
@@ -29,7 +30,11 @@ export default function AddProductPage() {
   };
 
   const handleFileChange = (e) => {
-    setImageFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -40,25 +45,25 @@ export default function AddProductPage() {
     if (imageFile) {
       const fileExt = imageFile.name.split('.').pop();
       const fileName = `${Date.now()}.${fileExt}`;
-      const filePath = `${Date.now()}.${fileExt}`;
-    
+      const filePath = `${fileName}`;
+
       const { error: uploadError } = await supabase.storage
         .from('products') 
         .upload(filePath, imageFile);
-    
+
       if (uploadError) {
         console.error('Görsel yüklenirken hata oluştu:', uploadError);
         return;
       }
-    
+
       const { data: publicUrlData } = supabase
         .storage
         .from('products')
         .getPublicUrl(filePath);
-    
+
       imageUrl = publicUrlData.publicUrl;
     }
-    
+
     const productData = {
       ...product,
       img: imageUrl
@@ -72,6 +77,7 @@ export default function AddProductPage() {
       console.log('Ürün başarıyla eklendi:', productData);
       setProduct({ name: '', img: '', price: '', stock: '', category_id: '' });
       setImageFile(null);
+      setPreviewUrl(null);
     }
   };
 
@@ -79,8 +85,19 @@ export default function AddProductPage() {
     <div className="add-product-page">
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder="Ürün Adı" value={product.name} onChange={handleChange} required />
-        
-        <input type="file" accept="image/*" onChange={handleFileChange} required />
+
+        {/* Dosya yükleme butonu, input gizlendi */}
+        <label style={{ cursor: "pointer", padding: "10px", background: "#007bff", color: "#fff", borderRadius: "5px", display: "inline-block" }}>
+          Görsel Seç
+          <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
+        </label>
+
+        {/* Önizleme Alanı */}
+        {previewUrl && (
+          <div style={{ marginTop: "10px" }}>
+            <img src={previewUrl} alt="Önizleme" style={{ width: "200px", height: "auto", borderRadius: "10px" }} />
+          </div>
+        )}
 
         <input type="number" name="price" placeholder="Fiyat" value={product.price} onChange={handleChange} required />
         <input type="number" name="stock" placeholder="Stok" value={product.stock} onChange={handleChange} required />
