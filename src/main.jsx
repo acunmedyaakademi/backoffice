@@ -1,10 +1,10 @@
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import { Router } from "./Router.jsx";
-
 import LoginRegister from "./pages/LoginRegister.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { createClient } from "@supabase/supabase-js";
+import AddProductPage from "./pages/AddProductPage.jsx";
 
 export const supabase = createClient(
   "https://sxkbwpcardxrhfuqzvzc.supabase.co",
@@ -19,6 +19,10 @@ const routes = [
   {
     url: "/dashboard",
     component: <Dashboard />,
+  },
+  {
+    url: "/add-product",
+    component: <AddProductPage/>,
   },
 ];
 
