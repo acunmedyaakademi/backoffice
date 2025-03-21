@@ -12,6 +12,8 @@ export default function AddProductPage() {
   });
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown aç/kapat
+  const [selectedCategory, setSelectedCategory] = useState("Kategori Seç"); // Seçilen kategori adı
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -27,6 +29,12 @@ export default function AddProductPage() {
 
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
+  };
+
+  const handleCategorySelect = (id, name) => {
+    setProduct({ ...product, category_id: id });
+    setSelectedCategory(name);
+    setDropdownOpen(false);
   };
 
   const handleFileChange = (e) => {
@@ -78,41 +86,53 @@ export default function AddProductPage() {
       setProduct({ name: '', img: '', price: '', stock: '', category_id: '' });
       setImageFile(null);
       setPreviewUrl(null);
+      setSelectedCategory("Kategori Seç");
     }
   };
 
   return (
     <div className="add-product-page">
+      <div className="add-product-title">
+        <h5>ÜRÜN EKLE</h5>
+      </div>
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder="Ürün Adı" value={product.name} onChange={handleChange} required />
+        <input type="number" name="price" placeholder="Fiyat" value={product.price} onChange={handleChange} required />
+        <input type="number" name="stock" placeholder="Stok" value={product.stock} onChange={handleChange} required />
 
-        {/* Dosya yükleme butonu, input gizlendi */}
-        <label style={{ cursor: "pointer", padding: "10px", background: "#007bff", color: "#fff", borderRadius: "5px", display: "inline-block" }}>
-          Görsel Seç
-          <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
-        </label>
+        {/* Özel Dropdown Menü */}
+        <div className="custom-dropdown">
+          <button type="button" className="dropdown-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
+            {selectedCategory}
+          </button>
+          {dropdownOpen && (
+            <div className="dropdown-content">
+              {categories.map((category) => (
+                <div 
+                  key={category.id} 
+                  className="dropdown-option"
+                  onClick={() => handleCategorySelect(category.id, category.name)}
+                >
+                  {category.name}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-        {/* Önizleme Alanı */}
         {previewUrl && (
           <div style={{ marginTop: "10px" }}>
             <img src={previewUrl} alt="Önizleme" style={{ width: "200px", height: "auto", borderRadius: "10px" }} />
           </div>
         )}
 
-        <input type="number" name="price" placeholder="Fiyat" value={product.price} onChange={handleChange} required />
-        <input type="number" name="stock" placeholder="Stok" value={product.stock} onChange={handleChange} required />
+        <label className='select-img'>
+          Görsel Seç
+          <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
+        </label>
 
-        <select name="category_id" value={product.category_id} onChange={handleChange} required>
-          <option value="">Kategori Seç</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit">Ürün Ekle</button>
+        <button type="submit" className='add-product-btn'>Ürün Ekle</button>
       </form>
     </div>
   );
-};
+}
