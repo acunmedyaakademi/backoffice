@@ -17,7 +17,7 @@ function App() {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_IN" || event === "USER_UPDATED") {
-        setAuthUser(session.user); 
+        setAuthUser(session.user);
       }
       if (event === "SIGNED_OUT") {
         setAuthUser(null);
@@ -28,16 +28,16 @@ function App() {
   }, []);
 
   return (
-      <UserContext.Provider value={authUser}>
-        <div className="container">
-          <header className="header">
-            <div className="xoLogo">
+    <UserContext.Provider value={authUser}>
+      <div className="container">
+        <header className="header">
+          <div className="xoLogo">
 
-            </div>
-          </header>
-          {page.component}
-        </div>
-      </UserContext.Provider>
+          </div>
+        </header>
+        {page.component}
+      </div>
+    </UserContext.Provider>
   );
 }
 

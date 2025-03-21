@@ -5,6 +5,7 @@ import LoginRegister from "./pages/LoginRegister.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { createClient } from "@supabase/supabase-js";
 import AddProductPage from "./pages/AddProductPage.jsx";
+import Stock from "./Stock.jsx";
 import SalesReport from "./pages/SalesReport.jsx";
 
 export const supabase = createClient(
@@ -24,6 +25,10 @@ const routes = [
   {
     url: "/add-product",
     component: <AddProductPage />,
+  },
+  {
+    url: "/stock", // 👈 yeni rota
+    component: <Stock />
   },
   {
     url: "/sales-reports",

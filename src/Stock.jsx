@@ -1,70 +1,118 @@
-import { useState } from "react";
-import { supabase } from "../main"; // Supabase bağlantısını içeri al
+import { useEffect, useState } from "react";
+import { supabase } from "./main";
+console.log("📌 Stock bileşeni render edildi!");
 
 const Stock = () => {
-  const [loading, setLoading] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const updateStock = async () => {
-    setLoading(true);
+  useEffect(() => {
+    const updateStock = async () => {
+      setLoading(true);
+      console.log("🔄 Stok güncelleme işlemi başladı...");
 
-    try {
-      // 1️⃣ "ready" olan siparişleri al (status_id = 3)
-      const { data: orders, error: orderError } = await supabase
+      // 1. Status ID'si 3 olan siparişleri al
+      const { data: orders, error: ordersError } = await supabase
         .from("orders")
         .select("id")
         .eq("status_id", 3);
 
-      if (orderError) throw orderError;
-      if (!orders.length) {
-        alert("Stoktan düşülecek hazır sipariş yok.");
+      if (ordersError) {
+        console.error("❌ Siparişler çekilemedi:", ordersError.message);
         setLoading(false);
         return;
       }
 
-      // 2️⃣ Sipariş detaylarından hangi ürünlerin alındığını öğren
+      console.log("📦 Teslim edilen siparişler:", orders);
+
       const orderIds = orders.map(order => order.id);
-      const { data: orderDetails, error: detailsError } = await supabase
-        .from("order_details") // Sipariş detaylarını içeren tablo
-        .select("product_id, quantity")
+      if (orderIds.length === 0) {
+        console.log("⚠️ Teslim edilen sipariş yok.");
+        setLoading(false);
+        return;
+      }
+
+      // 2. order_details tablosundan siparişlere ait product_id'leri çek
+      const { data: orderDetails, error: orderDetailsError } = await supabase
+        .from("order_details")
+        .select("product_id")
         .in("order_id", orderIds);
 
-      if (detailsError) throw detailsError;
+      if (orderDetailsError) {
+        console.error("❌ Sipariş detayları çekilemedi:", orderDetailsError.message);
+        setLoading(false);
+        return;
+      }
 
-      // 3️⃣ Stokları güncelle
-      for (const { product_id, quantity } of orderDetails) {
-        const { data: product, error: productError } = await supabase
+      console.log("📦 Sipariş detaylarından çekilen ürün ID'leri:", orderDetails);
+
+      const productIds = orderDetails.map(detail => detail.product_id);
+      if (productIds.length === 0) {
+        console.log("⚠️ Siparişlerde ürün yok.");
+        setLoading(false);
+        return;
+      }
+
+      // 3. Stokları güncelle
+      for (const productId of productIds) {
+        const { error: updateError } = await supabase
           .from("products")
-          .select("stock")
-          .eq("id", product_id)
-          .single();
+          .update({ stock: supabase.raw("stock - 1") })
+          .eq("id", productId);
 
-        if (productError) throw productError;
-
-        // Eğer stok yeterliyse güncelle
-        if (product.stock >= quantity) {
-          await supabase
-            .from("products")
-            .update({ stock: product.stock - quantity })
-            .eq("id", product_id);
+        if (updateError) {
+          console.error(`❌ Ürün ID ${productId} stok güncellenemedi:`, updateError.message);
         } else {
-          console.warn(`Yetersiz stok: Ürün ID ${product_id}`);
+          console.log(`✅ Ürün ID ${productId} stok güncellendi.`);
         }
       }
 
-      alert("Stok güncellendi.");
-    } catch (error) {
-      console.error("Hata:", error);
-      alert("Bir hata oluştu.");
-    } finally {
+      // 4. Güncellenmiş stok verisini tekrar çek ve state'e ata
+      const { data: updatedProducts, error: productsError } = await supabase
+        .from("products")
+        .select("*");
+
+      if (productsError) {
+        console.error("❌ Ürünler tekrar çekilemedi:", productsError.message);
+      } else {
+        console.log("📦 Güncellenmiş ürün listesi:", updatedProducts);
+        setProducts(updatedProducts);
+      }
+
       setLoading(false);
-    }
-  };
+    };
+
+    updateStock();
+  }, []); // Sayfa yüklendiğinde sadece 1 kez çalışır
 
   return (
     <div>
-      <button onClick={updateStock} disabled={loading}>
-        {loading ? "Güncelleniyor..." : "Stok Güncelle"}
-      </button>
+      <h2>Stok Listesi</h2>
+      {loading ? (
+        <p>Yükleniyor...</p>
+      ) : (
+        <>
+          <button onClick={() => window.location.reload()}>Sayfayı Yenile</button>
+          <table border="1" cellPadding="10" style={{ borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Ürün Adı</th>
+                <th>Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map(p => (
+                <tr key={p.id}>
+                  <td>{p.id}</td>
+                  <td>{p.name}</td>
+                  <td>{p.stock}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 };
