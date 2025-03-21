@@ -10,7 +10,8 @@ export default function AddProductPage() {
     stock: '',
     category_id: ''
   });
-
+  const [imageFile, setImageFile] = useState(null);
+  
   useEffect(() => {
     const fetchCategories = async () => {
       const { data, error } = await supabase.from('categories').select('id, name');
@@ -27,15 +28,50 @@ export default function AddProductPage() {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setImageFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.from('products').insert([product]);
+
+    let imageUrl = '';
+
+    if (imageFile) {
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${Date.now()}.${fileExt}`;
+    
+      const { error: uploadError } = await supabase.storage
+        .from('products') 
+        .upload(filePath, imageFile);
+    
+      if (uploadError) {
+        console.error('Görsel yüklenirken hata oluştu:', uploadError);
+        return;
+      }
+    
+      const { data: publicUrlData } = supabase
+        .storage
+        .from('products')
+        .getPublicUrl(filePath);
+    
+      imageUrl = publicUrlData.publicUrl;
+    }
+    
+    const productData = {
+      ...product,
+      img: imageUrl
+    };
+
+    const { data, error } = await supabase.from('products').insert([productData]);
 
     if (error) {
       console.error('Ürün eklenirken hata oluştu:', error);
     } else {
-      console.log('Ürün başarıyla eklendi:', product);
-      setProduct({ name: '', img: '', price: '', stock: '', category_id: '' }); // Formu sıfırla
+      console.log('Ürün başarıyla eklendi:', productData);
+      setProduct({ name: '', img: '', price: '', stock: '', category_id: '' });
+      setImageFile(null);
     }
   };
 
@@ -43,7 +79,9 @@ export default function AddProductPage() {
     <div className="add-product-page">
       <form onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder="Ürün Adı" value={product.name} onChange={handleChange} required />
-        <input type="text" name="img" placeholder="Görsel URL" value={product.img} onChange={handleChange} required />
+        
+        <input type="file" accept="image/*" onChange={handleFileChange} required />
+
         <input type="number" name="price" placeholder="Fiyat" value={product.price} onChange={handleChange} required />
         <input type="number" name="stock" placeholder="Stok" value={product.stock} onChange={handleChange} required />
 
