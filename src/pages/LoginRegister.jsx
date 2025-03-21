@@ -38,14 +38,14 @@ export default function LoginRegister() {
 
   return (
     <>
-      <h2>Giriş yap</h2>
-      <p>
+      
+      {/* <p>
         Kullanıcı bilgilerin ile sisteme giriş yapabilirsin. Eğer bilgilerini
         hatırlamıyorsan{" "}
         <Link href="/sifremi-unuttum">şifreni sıfırla</Link>yabilirsin.
-      </p>
+      </p> */}
 
-      <p>
+      {/* <p>
         <label>
           <input
             type="checkbox"
@@ -54,11 +54,12 @@ export default function LoginRegister() {
           />{" "}
           Yeni kayıt oluyorum.
         </label>
-      </p>
+      </p> */}
 
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
       <form autoComplete="off" onSubmit={handleSubmit}>
+        <h2>Giriş yap</h2>
         {isRegister && (
           <p>
             <input required type="text" name="name" placeholder="Ad soyad" />
@@ -81,8 +82,8 @@ export default function LoginRegister() {
           />
         </p>
         <p>
-          <button>{isRegister ? "Kayıt" : "Giriş"}</button>
-          {!isRegister ? (
+          <button>{isRegister ? "Kayıt" : "Giriş Yap"}</button>
+          {/* {!isRegister ? (
             <Link href="/sifremi-unuttum" className="btn btn-ghost">
               Şifremi unuttum
             </Link>
@@ -94,7 +95,7 @@ export default function LoginRegister() {
             >
               Vazgeç
             </button>
-          )}
+          )} */}
         </p>
       </form>
     </>
