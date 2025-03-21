@@ -1,103 +1,13 @@
-/* buse başlangıç */
-.add-product-page {
-  background-color: #f0ece5;
-  width: 100%;
-  height: 100vh;    
-  padding-top: 50px;
-  font-family: 'Outfit';
-
-  .add-product-title h5 {
-    max-width: 600px;
-    margin-inline: auto;
-    margin-bottom: 30px;
-    font-weight: 700;
-    font-size: 36px;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    max-width: 600px;
-    margin-inline: auto;
-    gap: 20px;
-
-  
-    input, select {
-      padding: 15px;
-      border-radius: 7px;
-      border: 1px solid black;
-    }
-
-    .custom-dropdown {
-      position: relative;
-      width: 100%;
-    }
-    
-    .dropdown-btn {
-      width: 100%;
-      padding: 10px;
-      background-color: white;
-      color: rgb(95, 95, 95);
-      padding: 15px;
-      border-radius: 7px;
-      border: 1px solid black;
-      cursor: pointer;
-      text-align: left;
-    }
-    
-    .dropdown-content {
-      position: absolute;
-      width: 100%;
-      background: white;
-      border: 1px solid #ddd;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      z-index: 10;
-      max-height: 300px;
-      overflow-y: auto;
-      border-radius: 8px;
-      margin-top: 5px;
-    }
-    
-    .dropdown-option {
-      padding: 10px;
-      cursor: pointer;
-    }
-    
-    .dropdown-option:hover {
-      background-color: #f1f1f1;
-    }
-    
-
-    .select-img {
-      background-color: #c9171c;
-      padding-block: 10px;
-      max-width: 200px;
-      text-align: -webkit-center;
-      border-radius: 7px;
-      color: white;
-      cursor: pointer;
-    }
-
-    .add-product-btn {
-      background-color: #ffca40;
-      border: none;
-      color: black;
-      cursor: pointer;
-      padding-block: 10px;
-      max-width: 200px;
-      border-radius: 7px;
-    }
-  }
-} 
-/* buse bitiş */
-
 /*Login sayfa tasarımı başlangıcı- Ece*/
+* {
+  list-style: none;
+  text-decoration: none;
+}
 body {
   margin: 0;
   padding: 0;
   font-family: 'Outfit';
   background: #EFECE5;
-
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -191,7 +101,7 @@ input[type="checkbox"] {
   color: #c62828;
   border: 1px solid #ef9a9a;
 }
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   #root {
     padding: 10px;
   }
@@ -200,3 +110,92 @@ input[type="checkbox"] {
   }
 }
 /*Login sayfa tasarımı bitişi- Ece*/
+
+/*Dashboard tasarımı başlangıcı- Ece*/
+.dashboard {
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 40px 20px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* Scope these styles to only apply to links within the dashboard container */
+.dashboard .add-product-btn, 
+.dashboard .sales-reports-btn, 
+.dashboard .stocks-btn {
+  width: 300px;
+  height: 150px;
+  padding: 30px;
+  border: transparent;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard .add-product-btn:hover, 
+.dashboard .sales-reports-btn:hover, 
+.dashboard .stocks-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard .add-product-btn {
+  background-color: #C8161D;
+  color: #fff;
+}
+
+.dashboard .add-product-btn::after {
+  content: "➕";
+  font-size: 32px;
+  margin-top: 20px;
+}
+
+.dashboard .sales-reports-btn {
+  background-color: #333;
+  color: #FFCA40;
+}
+
+.dashboard .sales-reports-btn::after {
+  content: "📊";
+  font-size: 32px;
+  margin-top: 20px;
+}
+
+.dashboard .stocks-btn {
+  background-color: #FFCA40;
+  color: #333;
+}
+
+.dashboard .stocks-btn::after {
+  content: "📦";
+  font-size: 32px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
+  
+  .dashboard .add-product-btn, 
+  .dashboard .sales-reports-btn, 
+  .dashboard .stocks-btn {
+    width: 100%;
+    max-width: 400px;
+    height: 150px;
+  }
+}
+
+/*Dashboard tasarımı bitişi- Ece*/

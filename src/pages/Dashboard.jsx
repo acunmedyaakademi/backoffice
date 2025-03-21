@@ -4,13 +4,13 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <Link href="/add-product" className="add-product-btn">
-        Ürün ekle
+        Ürün Ekle
       </Link>
       <Link href="/sales-reports" className="sales-reports-btn">
-        Satış raporları
+        Satış Raporları
       </Link>
       <Link href="/stock" className="stocks-btn">
-        Stock
+        Stok Durumu
       </Link>
     </div>
   );
