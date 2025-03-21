@@ -58,7 +58,7 @@ export default function LoginRegister() {
 
       {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-      <form autoComplete="off" onSubmit={handleSubmit}>
+      <form className="loginForm" autoComplete="off" onSubmit={handleSubmit}>
         <h2>Giriş yap</h2>
         {isRegister && (
           <p>
@@ -82,7 +82,7 @@ export default function LoginRegister() {
           />
         </p>
         <p>
-          <button>{isRegister ? "Kayıt" : "Giriş Yap"}</button>
+          <button className="loginBtn" >{isRegister ? "Kayıt" : "Giriş Yap"}</button>
           {/* {!isRegister ? (
             <Link href="/sifremi-unuttum" className="btn btn-ghost">
               Şifremi unuttum

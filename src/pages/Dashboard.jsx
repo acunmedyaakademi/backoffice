@@ -9,6 +9,9 @@ export default function Dashboard() {
       <Link href="/sales-reports" className="sales-reports-btn">
         Satış raporları
       </Link>
+      <Link href="/stock" className="stocks-btn">
+        Stock
+      </Link>
     </div>
   );
 }
