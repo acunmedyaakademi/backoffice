@@ -5,6 +5,7 @@ import LoginRegister from "./pages/LoginRegister.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { createClient } from "@supabase/supabase-js";
 import AddProductPage from "./pages/AddProductPage.jsx";
+import Stock from "./Stock.jsx";
 
 export const supabase = createClient(
   "https://sxkbwpcardxrhfuqzvzc.supabase.co",
@@ -22,7 +23,11 @@ const routes = [
   },
   {
     url: "/add-product",
-    component: <AddProductPage/>,
+    component: <AddProductPage />,
+  },
+  {
+    url: "/stock", // 👈 yeni rota
+    component: <Stock />,
   },
 ];
 
