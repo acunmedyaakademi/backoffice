@@ -312,4 +312,84 @@ input[type="checkbox"] {
   min-width: 300px;
 }
 
+.custom-dropdown {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  background-color: white;
+  cursor: pointer;
+  width: 100%;
+}
+
+.dropdown-selected {
+  font-weight: bold;
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 999;
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 4px;
+}
+
+.dropdown-option {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-option:hover {
+  background-color: #f1f1f1;
+}
+
+label h6 {
+  font-size: 17px;
+  margin-block: 10px;
+}
+
+label input {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  background-color: white;
+  cursor: pointer;
+  width: 100%;
+}
+
+.dialogBtns {
+  display: flex;
+  gap: 15px;
+}
+
+.addBtn, .cancelBtn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  font-weight: 500;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.addBtn {
+  background-color: #FFCA40;
+  color: #333;
+}
+
+.cancelBtn {
+  background-color: #C8161D;
+  color: #fff;
+}
+
+
 /* buse bitiş */

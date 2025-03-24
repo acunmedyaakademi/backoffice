@@ -7,6 +7,8 @@ const Stock = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
   const [stockToAdd, setStockToAdd] = useState(1);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
 
   // 1. Ürünleri her zaman göster
   const fetchProducts = async () => {
@@ -209,21 +211,36 @@ const Stock = () => {
           <div className="dialog">
             <h3>Stok Ekle</h3>
             <label>
-              Ürün Seç:
-              <select
-                value={selectedProductId}
-                onChange={(e) => setSelectedProductId(e.target.value)}
+             <h6> Ürün Seç:</h6>
+              <div
+                className="custom-dropdown"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
               >
-                <option value="">Seçiniz</option>
-                {products.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+                <div className="dropdown-selected">
+                  {products.find((p) => p.id === selectedProductId)?.name ||
+                    "Seçiniz"}
+                </div>
+                {dropdownOpen && (
+                  <div className="dropdown-options">
+                    {products.map((p) => (
+                      <div
+                        key={p.id}
+                        className="dropdown-option"
+                        onClick={() => {
+                          setSelectedProductId(p.id);
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        {p.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </label>
+
             <label>
-              Eklenecek Miktar:
+              <h6>Eklenecek Miktar:</h6>
               <input
                 type="number"
                 min="1"
@@ -231,11 +248,11 @@ const Stock = () => {
                 onChange={(e) => setStockToAdd(e.target.value)}
               />
             </label>
-            <div style={{ marginTop: "10px" }}>
-              <button onClick={handleStockAdd}>Ekle</button>
+            <div className="dialogBtns">
+              <button className="addBtn" onClick={handleStockAdd}>Ekle</button>
               <button
+              className="cancelBtn"
                 onClick={() => setShowDialog(false)}
-                style={{ marginLeft: "10px" }}
               >
                 İptal
               </button>
