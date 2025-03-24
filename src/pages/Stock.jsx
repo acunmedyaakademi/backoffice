@@ -15,6 +15,7 @@ const Stock = () => {
     }
   };
 
+
   useEffect(() => {
     const updateStock = async () => {
       setLoading(true);
