@@ -48,25 +48,40 @@ export default function AddProductPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let imageUrl = '';
+    // Aynı isimde ürün olup olmadığını kontrol et
+    const { data: existingProducts, error: checkError } = await supabase
+      .from("products")
+      .select('*')
+      .ilike('name', product.name);
+
+    if (checkError) {
+      console.error("Ürün kontrol edilirken hata oluştu:", checkError);
+      return;
+    }
+
+    if (existingProducts.length > 0) {
+      alert("Bu ürün zaten mevcut!");
+      return;
+    }
+
+    let imageUrl = "";
 
     if (imageFile) {
-      const fileExt = imageFile.name.split('.').pop();
+      const fileExt = imageFile.name.split(".").pop();
       const fileName = `${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
-        .from('products') 
+        .from("products")
         .upload(filePath, imageFile);
 
       if (uploadError) {
-        console.error('Görsel yüklenirken hata oluştu:', uploadError);
+        console.error("Görsel yüklenirken hata oluştu:", uploadError);
         return;
       }
 
-      const { data: publicUrlData } = supabase
-        .storage
-        .from('products')
+      const { data: publicUrlData } = supabase.storage
+        .from("products")
         .getPublicUrl(filePath);
 
       imageUrl = publicUrlData.publicUrl;
@@ -74,21 +89,22 @@ export default function AddProductPage() {
 
     const productData = {
       ...product,
-      img: imageUrl
+      img: imageUrl,
     };
 
-    const { data, error } = await supabase.from('products').insert([productData]);
+    const { error } = await supabase.from("products").insert([productData]);
 
     if (error) {
-      console.error('Ürün eklenirken hata oluştu:', error);
+      console.error("Ürün eklenirken hata oluştu:", error);
     } else {
-      console.log('Ürün başarıyla eklendi:', productData);
-      setProduct({ name: '', img: '', price: '', stock: '', category_id: '' });
+      console.log("Ürün başarıyla eklendi:", productData);
+      setProduct({ name: "", img: "", price: "", stock: "", category_id: "" });
       setImageFile(null);
       setPreviewUrl(null);
       setSelectedCategory("Kategori Seç");
     }
   };
+
 
   return (
     <div className="add-product-page">
@@ -108,8 +124,8 @@ export default function AddProductPage() {
           {dropdownOpen && (
             <div className="dropdown-content">
               {categories.map((category) => (
-                <div 
-                  key={category.id} 
+                <div
+                  key={category.id}
                   className="dropdown-option"
                   onClick={() => handleCategorySelect(category.id, category.name)}
                 >
