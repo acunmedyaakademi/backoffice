@@ -1,17 +1,29 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../main";
-console.log("📌 Stock bileşeni render edildi!");
 
 const Stock = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // 1. Ürünleri her zaman göster
+  const fetchProducts = async () => {
+    const { data, error } = await supabase.from("products").select("*");
+    if (error) {
+      console.error("❌ Ürünler çekilemedi:", error.message);
+    } else {
+      setProducts(data);
+    }
+  };
 
   useEffect(() => {
     const updateStock = async () => {
       setLoading(true);
       console.log("🔄 Stok güncelleme işlemi başladı...");
 
-      // 1. Status ID'si 3 olan siparişleri al
+      // 2. Daha önce işlenen sipariş ID'lerini al
+      const storedOrderIds = JSON.parse(localStorage.getItem("processedOrderIds") || "[]");
+
+      // 3. status_id = 3 olan siparişleri al
       const { data: orders, error: ordersError } = await supabase
         .from("orders")
         .select("id")
@@ -19,44 +31,44 @@ const Stock = () => {
 
       if (ordersError) {
         console.error("❌ Siparişler çekilemedi:", ordersError.message);
+        await fetchProducts();
         setLoading(false);
         return;
       }
 
-      console.log("📦 Teslim edilen siparişler:", orders);
-
-      const orderIds = orders.map(order => order.id);
-      if (orderIds.length === 0) {
-        console.log("⚠️ Teslim edilen sipariş yok.");
+      // 4. Daha önce işlenmemiş siparişleri filtrele
+      const newOrders = orders.filter(order => !storedOrderIds.includes(order.id));
+      if (newOrders.length === 0) {
+        console.log("⚠️ Yeni işlenmemiş sipariş yok.");
+        await fetchProducts(); // Yine de ürünleri göster
         setLoading(false);
         return;
       }
 
-      // 2. order_details tablosundan sadece ilgili siparişlere ait product_id'leri ve miktarları çek
+      const newOrderIds = newOrders.map(order => order.id);
+      console.log("🆕 Yeni sipariş ID'leri:", newOrderIds);
+
+      // 5. Sipariş detaylarından ürünleri al
       const { data: orderDetails, error: orderDetailsError } = await supabase
         .from("order_details")
         .select("product_id, order_id")
-        .in("order_id", orderIds); // Sadece ilgili siparişleri getir
+        .in("order_id", newOrderIds);
 
       if (orderDetailsError) {
         console.error("❌ Sipariş detayları çekilemedi:", orderDetailsError.message);
+        await fetchProducts();
         setLoading(false);
         return;
       }
 
-      console.log("📦 Sipariş detaylarından çekilen ürün ID'leri:", orderDetails);
-
-      // Ürün ID'lerini siparişlerde kaç kere geçtiğini hesaplayarak azaltma miktarını belirle
+      // 6. Hangi üründen kaç tane azaltılacak
       const productCountMap = {};
       orderDetails.forEach(detail => {
         productCountMap[detail.product_id] = (productCountMap[detail.product_id] || 0) + 1;
       });
 
-      console.log("🛒 Stok güncelleme için ürün adetleri:", productCountMap);
-
-      // 3. Stokları güncelle (yalnızca ilgili ürünleri azalt)
+      // 7. Stokları güncelle
       for (const productId in productCountMap) {
-        // Mevcut stok miktarını al
         const { data: productData, error: productError } = await supabase
           .from("products")
           .select("stock")
@@ -69,9 +81,8 @@ const Stock = () => {
         }
 
         const currentStock = productData.stock;
-        const newStock = Math.max(0, currentStock - productCountMap[productId]); // Stok 0 altına düşmesin
+        const newStock = Math.max(0, currentStock - productCountMap[productId]);
 
-        // Stok miktarını güncelle
         const { error: updateError } = await supabase
           .from("products")
           .update({ stock: newStock })
@@ -84,23 +95,16 @@ const Stock = () => {
         }
       }
 
-      // 4. Güncellenmiş stok verisini tekrar çek
-      const { data: updatedProducts, error: productsError } = await supabase
-        .from("products")
-        .select("*");
+      // 8. İşlenmiş sipariş ID’lerini localStorage’a kaydet
+      const updatedOrderIds = [...storedOrderIds, ...newOrderIds];
+      localStorage.setItem("processedOrderIds", JSON.stringify(updatedOrderIds));
 
-      if (productsError) {
-        console.error("❌ Ürünler tekrar çekilemedi:", productsError.message);
-      } else {
-        console.log("📦 Güncellenmiş ürün listesi:", updatedProducts);
-        setProducts(updatedProducts);
-      }
-
+      await fetchProducts(); // Güncellenmiş ürünleri getir
       setLoading(false);
     };
 
     updateStock();
-  }, []); // Sayfa yüklendiğinde sadece 1 kez çalışır
+  }, []);
 
   return (
     <div>
