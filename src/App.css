@@ -6,8 +6,8 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Outfit';
-  background: #EFECE5;
+  font-family: "Outfit";
+  background: #efece5;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -46,7 +46,9 @@ body {
     padding-bottom: 30px;
   }
 }
-.loginForm, h2, p {
+.loginForm,
+h2,
+p {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 20px 30px;
@@ -71,7 +73,7 @@ input[type="password"]::placeholder {
   color: #999;
 }
 .loginBtn {
-  background-color: #C8161D;
+  background-color: #c8161d;
   color: #ffffff;
   padding: 12px 20px;
   border: none;
@@ -84,7 +86,7 @@ input[type="password"]::placeholder {
   transition: background-color 0.3s;
 }
 .loginBtn:hover {
-  background-color: #FFCA40;
+  background-color: #ffca40;
   color: #333;
 }
 input[type="checkbox"] {
@@ -105,7 +107,9 @@ input[type="checkbox"] {
   #root {
     padding: 10px;
   }
-  h2, .loginForm, p {
+  h2,
+  .loginForm,
+  p {
     padding: 15px 20px;
   }
 }
@@ -123,8 +127,8 @@ input[type="checkbox"] {
 }
 
 /* Scope these styles to only apply to links within the dashboard container */
-.dashboard .add-product-btn, 
-.dashboard .sales-reports-btn, 
+.dashboard .add-product-btn,
+.dashboard .sales-reports-btn,
 .dashboard .stocks-btn {
   width: 300px;
   height: 150px;
@@ -142,15 +146,15 @@ input[type="checkbox"] {
   justify-content: center;
 }
 
-.dashboard .add-product-btn:hover, 
-.dashboard .sales-reports-btn:hover, 
+.dashboard .add-product-btn:hover,
+.dashboard .sales-reports-btn:hover,
 .dashboard .stocks-btn:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
 }
 
 .dashboard .add-product-btn {
-  background-color: #C8161D;
+  background-color: #c8161d;
   color: #fff;
 }
 
@@ -162,7 +166,7 @@ input[type="checkbox"] {
 
 .dashboard .sales-reports-btn {
   background-color: #333;
-  color: #FFCA40;
+  color: #ffca40;
 }
 
 .dashboard .sales-reports-btn::after {
@@ -172,7 +176,7 @@ input[type="checkbox"] {
 }
 
 .dashboard .stocks-btn {
-  background-color: #FFCA40;
+  background-color: #ffca40;
   color: #333;
 }
 
@@ -188,9 +192,9 @@ input[type="checkbox"] {
     gap: 40px;
     align-items: center;
   }
-  
-  .dashboard .add-product-btn, 
-  .dashboard .sales-reports-btn, 
+
+  .dashboard .add-product-btn,
+  .dashboard .sales-reports-btn,
   .dashboard .stocks-btn {
     width: 100%;
     max-width: 400px;
@@ -201,12 +205,16 @@ input[type="checkbox"] {
 /*Dashboard tasarımı bitişi- Ece*/
 
 /* buse başlangıç */
+table {
+  width: 100%;
+}
+
 .add-product-page {
   background-color: #f0ece5;
   width: 100%;
-  height: 100vh;    
+  height: 100vh;
   padding-top: 50px;
-  font-family: 'Outfit';
+  font-family: "Outfit";
 
   .add-product-title h5 {
     max-width: 600px;
@@ -223,8 +231,8 @@ input[type="checkbox"] {
     margin-inline: auto;
     gap: 20px;
 
-  
-    input, select {
+    input,
+    select {
       padding: 15px;
       border-radius: 7px;
       border: 1px solid black;
@@ -234,7 +242,7 @@ input[type="checkbox"] {
       position: relative;
       width: 100%;
     }
-    
+
     .dropdown-btn {
       width: 100%;
       padding: 10px;
@@ -246,7 +254,7 @@ input[type="checkbox"] {
       cursor: pointer;
       text-align: left;
     }
-    
+
     .dropdown-content {
       position: absolute;
       width: 100%;
@@ -259,16 +267,15 @@ input[type="checkbox"] {
       border-radius: 8px;
       margin-top: 5px;
     }
-    
+
     .dropdown-option {
       padding: 10px;
       cursor: pointer;
     }
-    
+
     .dropdown-option:hover {
       background-color: #f1f1f1;
     }
-    
 
     .select-img {
       background-color: #c9171c;
@@ -290,7 +297,7 @@ input[type="checkbox"] {
       border-radius: 7px;
     }
   }
-} 
+}
 
 .dialog-backdrop {
   position: fixed;
@@ -336,7 +343,7 @@ input[type="checkbox"] {
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
 }
 
@@ -369,7 +376,8 @@ label input {
   gap: 15px;
 }
 
-.addBtn, .cancelBtn {
+.addBtn,
+.cancelBtn {
   padding: 6px 10px;
   border: none;
   border-radius: 5px;
@@ -382,14 +390,62 @@ label input {
 }
 
 .addBtn {
-  background-color: #FFCA40;
+  background-color: #ffca40;
   color: #333;
 }
 
 .cancelBtn {
-  background-color: #C8161D;
+  background-color: #c8161d;
   color: #fff;
 }
 
+.search-results {
+  position: absolute;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-top: 5px;
+  border-radius: 5px;
+  background: white;
+  z-index: 10;
+}
+
+.search-results .dropdown-option {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.search-results .dropdown-option:hover {
+  background-color: #f0f0f0;
+}
+
+.stockButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+
+  button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+  }
+
+  .reloadBtn {
+    background-color: #ffca40;
+    color: #333;
+  }
+
+  .stockControlBtn {
+    background-color: #c8161d;
+    color: #fff;
+  }
+}
 
 /* buse bitiş */

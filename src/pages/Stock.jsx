@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../main";
 
 const Stock = () => {
@@ -8,7 +8,23 @@ const Stock = () => {
   const [selectedProductId, setSelectedProductId] = useState("");
   const [stockToAdd, setStockToAdd] = useState(1);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [productSearch, setProductSearch] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setFilteredProducts([]);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // 1. Ürünleri her zaman göster
   const fetchProducts = async () => {
@@ -130,25 +146,27 @@ const Stock = () => {
     updateStock();
   }, []);
 
-  const handleStockAdd = async () => {
+  const handleStockChange = async (type) => {
     if (!selectedProductId || stockToAdd <= 0) {
-      alert("Lütfen geçerli bir ürün ve miktar seçin.");
+      alert("Lütfen geçerli ürün ve miktar girin.");
       return;
     }
 
-    // Mevcut stok miktarını al
-    const { data: productData, error: productError } = await supabase
+    const { data: productData, error } = await supabase
       .from("products")
       .select("stock")
       .eq("id", selectedProductId)
       .single();
 
-    if (productError) {
-      console.error("Stok verisi alınamadı:", productError.message);
+    if (error) {
+      console.error("Stok verisi alınamadı:", error.message);
       return;
     }
 
-    const newStock = productData.stock + Number(stockToAdd);
+    let newStock =
+      type === "add"
+        ? productData.stock + Number(stockToAdd)
+        : Math.max(0, productData.stock - Number(stockToAdd));
 
     const { error: updateError } = await supabase
       .from("products")
@@ -156,13 +174,14 @@ const Stock = () => {
       .eq("id", selectedProductId);
 
     if (updateError) {
-      console.error("Stok artırılamadı:", updateError.message);
+      console.error("Stok güncellenemedi:", updateError.message);
     } else {
-      console.log("✅ Stok başarıyla artırıldı.");
+      console.log("✅ Stok güncellendi:", newStock);
       setShowDialog(false);
       setSelectedProductId("");
       setStockToAdd(1);
-      fetchProducts(); // Güncellenmiş veriyi getir
+      setProductSearch("");
+      fetchProducts();
     }
   };
 
@@ -173,15 +192,18 @@ const Stock = () => {
         <p>Yükleniyor...</p>
       ) : (
         <>
-          <button onClick={() => window.location.reload()}>
-            Sayfayı Yenile
-          </button>
-          <button
-            onClick={() => setShowDialog(true)}
-            style={{ marginBottom: "20px" }}
-          >
-            ➕ Stok Ekle
-          </button>
+          <div className="stockButtons">
+            <button className="reloadBtn" onClick={() => window.location.reload()}>
+              Sayfayı Yenile
+            </button>
+            <button
+              onClick={() => setShowDialog(true)}
+              className="stockControlBtn"
+            >
+              📦 Stok Kontrolü
+            </button>
+          </div>
+
           <table
             border="1"
             cellPadding="10"
@@ -207,40 +229,50 @@ const Stock = () => {
         </>
       )}
       {showDialog && (
-        <div className="dialog-backdrop">
-          <div className="dialog">
+        <div className="dialog-backdrop" onClick={() => setShowDialog(false)}>
+          <div
+            className="dialog"
+            onClick={(e) => e.stopPropagation()} // içeriye tıklanırsa kapanma
+          >
             <h3>Stok Ekle</h3>
-            <label>
-             <h6> Ürün Seç:</h6>
-              <div
-                className="custom-dropdown"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                <div className="dropdown-selected">
-                  {products.find((p) => p.id === selectedProductId)?.name ||
-                    "Seçiniz"}
-                </div>
-                {dropdownOpen && (
-                  <div className="dropdown-options">
-                    {products.map((p) => (
-                      <div
-                        key={p.id}
-                        className="dropdown-option"
-                        onClick={() => {
-                          setSelectedProductId(p.id);
-                          setDropdownOpen(false);
-                        }}
-                      >
-                        {p.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </label>
+            <div ref={dropdownRef}>
+              <label>
+                <h6>Ürün Ara:</h6>
+                <input
+                  type="text"
+                  value={productSearch}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setProductSearch(value);
+                    const results = products.filter((p) =>
+                      p.name.toLowerCase().includes(value.toLowerCase())
+                    );
+                    setFilteredProducts(results);
+                  }}
+                  placeholder="Ürün adı girin..."
+                />
+              </label>
 
+              {filteredProducts.length > 0 && (
+                <div className="search-results">
+                  {filteredProducts.map((p) => (
+                    <div
+                      key={p.id}
+                      className="dropdown-option"
+                      onClick={() => {
+                        setSelectedProductId(p.id);
+                        setProductSearch(p.name);
+                        setFilteredProducts([]);
+                      }}
+                    >
+                      {p.name}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <label>
-              <h6>Eklenecek Miktar:</h6>
+              <h6>Miktar:</h6>
               <input
                 type="number"
                 min="1"
@@ -248,13 +280,19 @@ const Stock = () => {
                 onChange={(e) => setStockToAdd(e.target.value)}
               />
             </label>
+
             <div className="dialogBtns">
-              <button className="addBtn" onClick={handleStockAdd}>Ekle</button>
               <button
-              className="cancelBtn"
-                onClick={() => setShowDialog(false)}
+                className="addBtn"
+                onClick={() => handleStockChange("add")}
               >
-                İptal
+                Ekle
+              </button>
+              <button
+                className="cancelBtn"
+                onClick={() => handleStockChange("remove")}
+              >
+                Çıkar
               </button>
             </div>
           </div>
