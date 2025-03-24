@@ -32,7 +32,9 @@ const Stock = () => {
     if (error) {
       console.error("❌ Ürünler çekilemedi:", error.message);
     } else {
-      setProducts(data);
+      // ilk yüklemede stokları büyükten küçüğe sırala
+      let sortedProducts = data.sort((a, b) => b.stock - a.stock);
+      setProducts(sortedProducts);
     }
   };
 
