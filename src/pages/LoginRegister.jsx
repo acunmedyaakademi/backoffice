@@ -39,21 +39,20 @@ export default function LoginRegister() {
   }
 
   return (
-    <div className="container">
+    <div className="login-container">
       <div className="login-text-area">
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-
-        <form className="loginForm" autoComplete="off" onSubmit={handleSubmit}>
-          <h1>
+        <h1>
             <svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
               <ellipse cx="150" cy="50" rx="120" ry="40" fill="#F4C7B8" />
-              <text x="50%" y="50%" font-family="Georgia, serif" font-size="48" font-weight="bold" fill="#222"
-                text-anchor="middle" alignment-baseline="central">
+              <text x="50%" y="50%" fontFamily="Georgia, serif" fontSize="48" fontWeight="bold" fill="#222"
+                textAnchor="middle" alignmentBaseline="central">
                 MUTFO
               </text>
             </svg>
-
           </h1>
+        <form className="loginForm" autoComplete="off" onSubmit={handleSubmit}>
+
           <h2>Giriş yap</h2>
           {isRegister && (
             <p>

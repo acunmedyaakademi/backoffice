@@ -4,11 +4,11 @@ body {
   background-image: url('../img/background.svg');
 }
 
-.container {
+.login-container {
   margin-inline: auto;
   display: flex;
   align-items: center;
-  gap: 200px;
+  gap: 50px;
 
   img {
     padding-inline: 20px;
@@ -18,6 +18,7 @@ body {
 
   h1 {
     margin-bottom: 50px;
+    max-width: 350px;
   }
 
   h2 {
@@ -26,6 +27,7 @@ body {
     line-height: 130%;
     letter-spacing: 2%;
     text-align: center;
+    max-width: 350px;
     /* font-variant-numeric-figure: lining-nums;
     font-variant-numeric-spacing: proportional-nums; */
     margin-bottom: 60px;
@@ -50,6 +52,7 @@ body {
       border: 1px solid #EA6A12;
       border-radius: 24px;
       margin-bottom: 16px;
+      max-width: 350px;
     }
   }
 
