@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { usePage } from "../Router";
 import { supabase } from "../main";
 import "../assets/css/LoginRegister.css"
-import loginImage from '../assets/img/login.svg';
+import RotatingFoodCircle from "../pages/RotatingFoodCircle";
 
 export default function LoginRegister() {
   const [isRegister, setRegister] = useState(false);
@@ -44,44 +44,48 @@ export default function LoginRegister() {
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
         <h1>
           <svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="150" cy="50" rx="120" ry="40" fill="#F4C7B8" />
-            <text x="50%" y="50%" fontFamily="Georgia, serif" fontSize="48" fontWeight="bold" fill="#222"
+            <ellipse cx="150" cy="50" rx="100" ry="40" fill="#F4C7B8" />
+            <text x="50%" y="50%" fontFamily="Georgia, serif" fontSize="60" fontWeight="bold" fill="#222"
               textAnchor="middle" alignmentBaseline="central">
               MUTFO
             </text>
           </svg>
         </h1>
         <form className="loginForm" autoComplete="off" onSubmit={handleSubmit}>
-
-          <h2>Giriş yap</h2>
+          <div className="login-content">
+            <h3>Sign In</h3>
+            <p>Sign in to stay connected.</p>
+          </div>
           {isRegister && (
             <p>
               <input required type="text" name="name" placeholder="Ad soyad" />
             </p>
           )}
-          <p className="input-parts">
-            <span>E-posta adresi</span>
-            <input
-              required
-              type="email"
-              name="email"
-            />
-          </p>
-          <p className="input-parts">
-            <span>Şifre</span>
-            <input
-              required
-              type="password"
-              name="password"
-            />
-          </p>
-          <p>
-            <button className="loginBtn" >{isRegister ? "Kayıt" : "Giriş Yap"}</button>
-          </p>
+          <div className="input-parts">
+            <div className="input-email">
+              <span>Email</span>
+              <input
+                required
+                type="email"
+                name="email"
+              />
+            </div>
+            <div className="input-password">
+              <span>Password</span>
+              <input
+                required
+                type="password"
+                name="password"
+              />
+            </div>
+          </div>
+          <div className="loginBtn">
+            <button>Sign in</button>
+          </div>
         </form>
       </div>
-      <div className="login-img-area">
-        <img src={loginImage} alt="Login" />
+      <div className="login-img-area flex items-center justify-center">
+        <RotatingFoodCircle />
       </div>
     </div>
   );
