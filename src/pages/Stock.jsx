@@ -7,7 +7,6 @@ const Stock = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState("");
   const [stockToAdd, setStockToAdd] = useState(1);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [productSearch, setProductSearch] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
 
@@ -26,13 +25,13 @@ const Stock = () => {
     };
   }, []);
 
-  // 1. Ürünleri her zaman göster
+
   const fetchProducts = async () => {
     const { data, error } = await supabase.from("products").select("*");
     if (error) {
-      console.error("❌ Ürünler çekilemedi:", error.message);
+      console.error("ürünler çekilemedi", error.message);
     } else {
-      // ilk yüklemede stokları büyükten küçüğe sırala
+
       let sortedProducts = data.sort((a, b) => b.stock - a.stock);
       setProducts(sortedProducts);
     }
@@ -41,41 +40,39 @@ const Stock = () => {
   useEffect(() => {
     const updateStock = async () => {
       setLoading(true);
-      console.log("🔄 Stok güncelleme işlemi başladı...");
+      console.log("stok güncelleme işlemi başladı");
 
-      // 2. Daha önce işlenen sipariş ID'lerini al
       const storedOrderIds = JSON.parse(
         localStorage.getItem("processedOrderIds") || "[]"
       );
 
-      // 3. status_id = 3 olan siparişleri al
+
       const { data: orders, error: ordersError } = await supabase
         .from("orders")
         .select("id")
         .eq("status_id", 3);
 
       if (ordersError) {
-        console.error("❌ Siparişler çekilemedi:", ordersError.message);
+        console.error("siparişler çekilemedi", ordersError.message);
         await fetchProducts();
         setLoading(false);
         return;
       }
 
-      // 4. Daha önce işlenmemiş siparişleri filtrele
       const newOrders = orders.filter(
         (order) => !storedOrderIds.includes(order.id)
       );
       if (newOrders.length === 0) {
-        console.log("⚠️ Yeni işlenmemiş sipariş yok.");
-        await fetchProducts(); // Yine de ürünleri göster
+        console.log("yeni işlenmemiş sipariş yok");
+        await fetchProducts(); 
         setLoading(false);
         return;
       }
 
       const newOrderIds = newOrders.map((order) => order.id);
-      console.log("🆕 Yeni sipariş ID'leri:", newOrderIds);
+      console.log("yeni sipariş ID'leri", newOrderIds);
 
-      // 5. Sipariş detaylarından ürünleri al
+
       const { data: orderDetails, error: orderDetailsError } = await supabase
         .from("order_details")
         .select("product_id, order_id")
@@ -83,7 +80,7 @@ const Stock = () => {
 
       if (orderDetailsError) {
         console.error(
-          "❌ Sipariş detayları çekilemedi:",
+          "sipariş detayları çekilemedi",
           orderDetailsError.message
         );
         await fetchProducts();
@@ -91,14 +88,12 @@ const Stock = () => {
         return;
       }
 
-      // 6. Hangi üründen kaç tane azaltılacak
       const productCountMap = {};
       orderDetails.forEach((detail) => {
         productCountMap[detail.product_id] =
           (productCountMap[detail.product_id] || 0) + 1;
       });
 
-      // 7. Stokları güncelle
       for (const productId in productCountMap) {
         const { data: productData, error: productError } = await supabase
           .from("products")
@@ -108,7 +103,7 @@ const Stock = () => {
 
         if (productError) {
           console.error(
-            `❌ Ürün ID ${productId} stok bilgisi alınamadı:`,
+            `${productId} stok bilgisi alınamadı`,
             productError.message
           );
           continue;
@@ -124,24 +119,23 @@ const Stock = () => {
 
         if (updateError) {
           console.error(
-            `❌ Ürün ID ${productId} stok güncellenemedi:`,
+            `${productId} stok güncellenemedi:`,
             updateError.message
           );
         } else {
           console.log(
-            `✅ Ürün ID ${productId} stok güncellendi: ${currentStock} ➝ ${newStock}`
+            ` ${productId} stok güncellendi ${currentStock} - ${newStock}`
           );
         }
       }
 
-      // 8. İşlenmiş sipariş ID’lerini localStorage’a kaydet
       const updatedOrderIds = [...storedOrderIds, ...newOrderIds];
       localStorage.setItem(
         "processedOrderIds",
         JSON.stringify(updatedOrderIds)
       );
 
-      await fetchProducts(); // Güncellenmiş ürünleri getir
+      await fetchProducts(); 
       setLoading(false);
     };
 
@@ -150,7 +144,7 @@ const Stock = () => {
 
   const handleStockChange = async (type) => {
     if (!selectedProductId || stockToAdd <= 0) {
-      alert("Lütfen geçerli ürün ve miktar girin.");
+      alert("lütfen geçerli ürün ve miktar girin.");
       return;
     }
 
@@ -161,7 +155,7 @@ const Stock = () => {
       .single();
 
     if (error) {
-      console.error("Stok verisi alınamadı:", error.message);
+      console.error("stok verisi alınamadı", error.message);
       return;
     }
 
@@ -176,9 +170,9 @@ const Stock = () => {
       .eq("id", selectedProductId);
 
     if (updateError) {
-      console.error("Stok güncellenemedi:", updateError.message);
+      console.error("stok güncellenemedi", updateError.message);
     } else {
-      console.log("✅ Stok güncellendi:", newStock);
+      console.log("stok güncellendi", newStock);
       setShowDialog(false);
       setSelectedProductId("");
       setStockToAdd(1);
@@ -234,7 +228,7 @@ const Stock = () => {
         <div className="dialog-backdrop" onClick={() => setShowDialog(false)}>
           <div
             className="dialog"
-            onClick={(e) => e.stopPropagation()} // içeriye tıklanırsa kapanma
+            onClick={(e) => e.stopPropagation()} 
           >
             <h3>Stok Ekle</h3>
             <div ref={dropdownRef}>

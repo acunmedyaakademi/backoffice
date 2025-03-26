@@ -22,18 +22,18 @@ const routes = [
     url: "/dashboard",
     component: <Dashboard />,
   },
-  {
-    url: "/add-product",
-    component: <AddProductPage />,
-  },
-  {
-    url: "/stock", // 👈 yeni rota
-    component: <Stock />
-  },
-  {
-    url: "/sales-reports",
-    component: <SalesReport />,
-  },
+  // {
+  //   url: "/add-product",
+  //   component: <AddProductPage />,
+  // },
+  // {
+  //   url: "/stock", 
+  //   component: <Stock />
+  // },
+  // {
+  //   url: "/sales-reports",
+  //   component: <SalesReport />,
+  // },
 ];
 
 createRoot(document.getElementById("root")).render(
