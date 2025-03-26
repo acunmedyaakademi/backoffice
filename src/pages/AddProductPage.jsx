@@ -105,7 +105,6 @@ export default function AddProductPage() {
     }
   };
 
-
   return (
     <div className="add-product-page">
       <div className="add-product-title">
@@ -116,7 +115,7 @@ export default function AddProductPage() {
         <input type="number" name="price" placeholder="Fiyat" value={product.price} onChange={handleChange} required />
         <input type="number" name="stock" placeholder="Stok" value={product.stock} onChange={handleChange} required />
 
-        {/* Özel Dropdown Menü */}
+        {/* Dropdown Menü */}
         <div className="custom-dropdown">
           <button type="button" className="dropdown-btn" onClick={() => setDropdownOpen(!dropdownOpen)}>
             {selectedCategory}

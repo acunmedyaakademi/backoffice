@@ -2,7 +2,7 @@ import { useEffect, useState, createContext } from "react";
 import "./App.css";
 import { Link, usePage } from "./Router";
 import { supabase } from "./main";
-import "./reset.css"
+import "./assets/css/reset.css"
 
 export const UserContext = createContext(null);
 

@@ -26,7 +26,6 @@ export default function SalesReport() {
 
   return (
     <div>
-      <h2>Satış Raporları</h2>
       <table border="1">
         <thead>
           <tr>
