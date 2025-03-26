@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, usePage } from "../Router";
+import { usePage } from "../Router";
 import { supabase } from "../main";
+import "../assets/css/LoginRegister.css"
+import loginImage from '../assets/img/login.svg';
 
 export default function LoginRegister() {
   const [isRegister, setRegister] = useState(false);
@@ -32,72 +34,56 @@ export default function LoginRegister() {
       console.error(error.message);
       setErrorMessage("Giriş başarısız: " + error.message);
     } else {
-      navigate("/dashboard"); // ✅ Doğru yönlendirme
+      navigate("/dashboard");
     }
   }
 
   return (
-    <>
-      
-      {/* <p>
-        Kullanıcı bilgilerin ile sisteme giriş yapabilirsin. Eğer bilgilerini
-        hatırlamıyorsan{" "}
-        <Link href="/sifremi-unuttum">şifreni sıfırla</Link>yabilirsin.
-      </p> */}
+    <div className="container">
+      <div className="login-text-area">
+        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-      {/* <p>
-        <label>
-          <input
-            type="checkbox"
-            onChange={() => setRegister(!isRegister)}
-            checked={isRegister}
-          />{" "}
-          Yeni kayıt oluyorum.
-        </label>
-      </p> */}
+        <form className="loginForm" autoComplete="off" onSubmit={handleSubmit}>
+          <h1>
+            <svg width="300" height="100" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="150" cy="50" rx="120" ry="40" fill="#F4C7B8" />
+              <text x="50%" y="50%" font-family="Georgia, serif" font-size="48" font-weight="bold" fill="#222"
+                text-anchor="middle" alignment-baseline="central">
+                MUTFO
+              </text>
+            </svg>
 
-      {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-
-      <form className="loginForm" autoComplete="off" onSubmit={handleSubmit}>
-        <h2>Giriş yap</h2>
-        {isRegister && (
-          <p>
-            <input required type="text" name="name" placeholder="Ad soyad" />
+          </h1>
+          <h2>Giriş yap</h2>
+          {isRegister && (
+            <p>
+              <input required type="text" name="name" placeholder="Ad soyad" />
+            </p>
+          )}
+          <p className="input-parts">
+            <span>E-posta adresi</span>
+            <input
+              required
+              type="email"
+              name="email"
+            />
           </p>
-        )}
-        <p>
-          <input
-            required
-            type="email"
-            name="email"
-            placeholder="E-posta adresi"
-          />
-        </p>
-        <p>
-          <input
-            required
-            type="password"
-            name="password"
-            placeholder="Şifre"
-          />
-        </p>
-        <p>
-          <button className="loginBtn" >{isRegister ? "Kayıt" : "Giriş Yap"}</button>
-          {/* {!isRegister ? (
-            <Link href="/sifremi-unuttum" className="btn btn-ghost">
-              Şifremi unuttum
-            </Link>
-          ) : (
-            <button
-              type="button"
-              className="btn-ghost"
-              onClick={() => setRegister(false)}
-            >
-              Vazgeç
-            </button>
-          )} */}
-        </p>
-      </form>
-    </>
+          <p className="input-parts">
+            <span>Şifre</span>
+            <input
+              required
+              type="password"
+              name="password"
+            />
+          </p>
+          <p>
+            <button className="loginBtn" >{isRegister ? "Kayıt" : "Giriş Yap"}</button>
+          </p>
+        </form>
+      </div>
+      <div className="login-img-area">
+        <img src={loginImage} alt="Login" />
+      </div>
+    </div>
   );
 }
