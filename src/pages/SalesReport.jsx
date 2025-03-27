@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../main";
-import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { LineChart, Line, PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import dayjs from "dayjs";
 
 export default function SalesReport() {
@@ -78,6 +78,7 @@ export default function SalesReport() {
         </PieChart>
       </div>
       <WeeklyTopSales />
+      <CategorySalesReport />
     </div>
   );
 }
@@ -151,6 +152,103 @@ function WeeklyTopSales() {
             stroke="#008000"
           />
         </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function CategorySalesReport() {
+  const [categorySales, setCategorySales] = useState([]);
+
+  useEffect(() => {
+    const fetchCategorySales = async () => {
+      // order_details tablosundan product_id'leri alıyoruz
+      const { data: orderDetails, error: orderDetailsError } = await supabase
+        .from('order_details')
+        .select('product_id');
+
+      if (orderDetailsError) {
+        console.error("Satış verilerini çekerken hata oluştu:", orderDetailsError);
+        return;
+      }
+
+      // products tablosundan product_id ve category_id alıyoruz
+      const { data: products, error: productsError } = await supabase
+        .from('products')
+        .select('id, category_id');
+
+      if (productsError) {
+        console.error("Ürün verilerini çekerken hata oluştu:", productsError);
+        return;
+      }
+
+      // order_details ve products verilerini birleştirip kategori bazında satışları grupladık
+      const categorySalesMap = {};
+
+      // orderDetails içindeki her ürün için category_id'yi bulup kategoriye göre satış miktarını hesaplıyoruz
+      orderDetails.forEach(order => {
+        // order_details'deki her satırdaki product_id'yi kullanarak category_id'yi buluyoruz
+        const product = products.find(p => p.id === order.product_id);
+
+        if (product) {
+          const categoryId = product.category_id;
+
+          // Kategoriyi map üzerinde toplayalım
+          if (categorySalesMap[categoryId]) {
+            categorySalesMap[categoryId] += 1; // Her product_id için bir tane satış ekliyoruz
+          } else {
+            categorySalesMap[categoryId] = 1; // İlk kez görülen kategori için satış başlatıyoruz
+          }
+        }
+      });
+
+      // kategori idlerini kategori isimlerine dönüştürüp veriyi formatlıyoruz
+      // kategorilerin isimlerini almak için products tablosunu yeniden kullanıyoruz
+      const { data: categories, error: categoriesError } = await supabase
+        .from('categories')
+        .select('id, name');
+
+      if (categoriesError) {
+        console.error("Kategori verilerini çekerken hata oluştu:", categoriesError);
+        return;
+      }
+
+      // kategori idlerini kategori isimlerine çeviriyoruz
+      const formattedData = categories.map(category => ({
+        name: category.name, // kategori adı
+        quantity: categorySalesMap[category.id] || 0 // kategoriye ait satış miktarı
+      }));
+
+      setCategorySales(formattedData);
+    };
+
+    fetchCategorySales();
+  }, []);
+
+  return (
+    <div className="category-sales-container">
+      <h3>Kategorilere Göre Satış Dağılımı</h3>
+
+      {/* Çizgi Grafik */}
+      <ResponsiveContainer width="100%" height={400}>
+        <LineChart data={categorySales}>
+          <Line
+            type="monotone"
+            dataKey="quantity"
+            stroke="#8884d8"
+            strokeWidth={2}
+          />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ddd',
+              borderRadius: '5px'
+            }}
+          />
+          <Legend />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
