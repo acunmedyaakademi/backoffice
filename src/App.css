@@ -126,7 +126,7 @@ h2:hover {
 
 .products {
   display: grid;
-  grid-template-columns: repeat(6, 200px);
+  grid-template-columns: repeat(6, 1fr);
   gap: 40px;
 
   .productBox {
@@ -189,4 +189,47 @@ h2:hover {
   justify-content: center;
   align-items: center;
   border: none;
+}
+
+.sales-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.pie-chart, .most-sales-products {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.custom-pie-chart {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.custom-pie {
+  transition: transform 0.3s ease;
+}
+
+.custom-bar-chart {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.recharts-responsive-container {
+  width: 1500px !important;
+  margin: 0 auto;
+}
+
+.custom-x-axis text, 
+.custom-y-axis text {
+  font-size: 10px;
+  fill: #666;
+}
+
+.custom-bar:hover {
+  opacity: 0.7;
 }
