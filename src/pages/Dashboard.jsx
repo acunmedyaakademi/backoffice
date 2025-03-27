@@ -4,12 +4,11 @@ import { DashboardSvg, ProductsSvg, SalesReportsSvg, StocksSvg } from "../Svg";
 import AddProductPage from "./AddProductPage";
 import SalesReport from "./SalesReport";
 import { supabase } from "../main";
-import Stock from "./Stock";
 
 export default function Dashboard() {
   const [showDialog, setShowDialog] = useState(false);
   const [products, setProducts] = useState([]);
-  const [activePage, setActivePage] = useState("stocks");
+  const [activePage, setActivePage] = useState("dashboard");
   const [stockToAdd, setStockToAdd] = useState(1);
   const [selectedProductId, setSelectedProductId] = useState("");
 
@@ -29,7 +28,6 @@ export default function Dashboard() {
     };
     fetchProducts();
   }, []);
-
 
   const handleStockChange = async (type) => {
     if (!selectedProductId || stockToAdd <= 0) {
@@ -68,6 +66,19 @@ export default function Dashboard() {
     }
   };
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    getUser();
+  }, []);
+
   return (
     <div className="dashboard">
       <div className="sideBar">
@@ -75,8 +86,9 @@ export default function Dashboard() {
         <div className="sideBarOption">
           <h6>Home</h6>
           <div
-            className={`optionText ${activePage === "dashboard" ? "active" : ""
-              }`}
+            className={`optionText ${
+              activePage === "dashboard" ? "active" : ""
+            }`}
             onClick={() => setActivePage("dashboard")}
           >
             <DashboardSvg />
@@ -100,7 +112,9 @@ export default function Dashboard() {
             <p>Stocks</p>
           </div>
           <div
-            className={`optionText ${activePage === "salesReports" ? "active" : ""}`}
+            className={`optionText ${
+              activePage === "salesReports" ? "active" : ""
+            }`}
             onClick={() => setActivePage("salesReports")}
           >
             <SalesReportsSvg />
@@ -112,32 +126,36 @@ export default function Dashboard() {
       {showDialog && (
         <div className="modal-overlay" onClick={() => setShowDialog(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            {activePage === "foods" ? <AddProductPage /> : <>
-              <label>
-                <h6>Miktar</h6>
-                <input
-                  type="number"
-                  min="1"
-                  value={stockToAdd}
-                  onChange={(e) => setStockToAdd(e.target.value)}
-                />
-              </label>
+            {activePage === "foods" ? (
+              <AddProductPage />
+            ) : (
+              <>
+                <label>
+                  <h6>Miktar</h6>
+                  <input
+                    type="number"
+                    min="1"
+                    value={stockToAdd}
+                    onChange={(e) => setStockToAdd(e.target.value)}
+                  />
+                </label>
 
-              <div className="dialogBtns">
-                <button
-                  className="addBtn"
-                  onClick={() => handleStockChange("add")}
-                >
-                  Ekle
-                </button>
-                <button
-                  className="cancelBtn"
-                  onClick={() => handleStockChange("remove")}
-                >
-                  Çıkar
-                </button>
-              </div>
-            </>}
+                <div className="dialogBtns">
+                  <button
+                    className="addBtn"
+                    onClick={() => handleStockChange("add")}
+                  >
+                    Ekle
+                  </button>
+                  <button
+                    className="cancelBtn"
+                    onClick={() => handleStockChange("remove")}
+                  >
+                    Çıkar
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -169,7 +187,12 @@ export default function Dashboard() {
                 <p>{p.name}</p>
                 <div className="stockQuantity">
                   <p>Quantity: {p.stock}</p>
-                  <button className="addStockBtn" onClick={() => OpenAddDialog(p.id)}>+</button>
+                  <button
+                    className="addStockBtn"
+                    onClick={() => OpenAddDialog(p.id)}
+                  >
+                    +
+                  </button>
                 </div>
               </div>
             ))}
@@ -181,6 +204,21 @@ export default function Dashboard() {
         <div className="sales-reports-container">
           <h2>SALES REPORTS</h2>
           <SalesReport />
+        </div>
+      )}
+
+      {activePage === "dashboard" && (
+        <div className="dashboard-container">
+          <h2>
+            Hoş geldin
+            {user?.email ? `, ${user.email}` : ""}
+            👋
+          </h2>
+          <img
+            src="/img/dashboard.png"
+            alt="png"
+            style={{ width: "300px", height: "auto" }}
+          />
         </div>
       )}
     </div>

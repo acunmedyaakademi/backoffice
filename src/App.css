@@ -241,3 +241,7 @@ h2:hover {
 .custom-bar:hover {
   opacity: 0.7;
 }
+
+.dashboard-img {
+  margin: 40px;
+}

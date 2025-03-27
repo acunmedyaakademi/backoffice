@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
-import food1 from "../assets/img/food-1.png";
-import food2 from "../assets/img/food-2.png";
-import food3 from "../assets/img/food-3.png";
-import food4 from "../assets/img/food-4.png";
-import food5 from "../assets/img/food-5.png";
-import food6 from "../assets/img/food-6.png";
+import food1 from "../../public/img/food-1.png";
+import food2 from "../../public/img/food-2.png";
+import food3 from "../../public/img/food-3.png";
+import food4 from "../../public/img/food-4.png";
+import food5 from "../../public/img/food-5.png";
+import food6 from "../../public/img/food-6.png";
 
 const foods = [food1, food2, food3, food4, food5, food6];
 
