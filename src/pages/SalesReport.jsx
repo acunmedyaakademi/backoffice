@@ -37,7 +37,7 @@ export default function SalesReport() {
   return (
     <div className="sales-container">
       <div className="pie-chart">
-        <h2>En Çok Satan 5 Ürün</h2>
+        <h3>Top 5 Best-Selling Products</h3>
         <PieChart
           width={800}
           height={400}
@@ -108,7 +108,7 @@ function WeeklyTopSales() {
       const sortedSales = Object.entries(groupedSales)
         .map(([name, quantity]) => ({ name, quantity }))
         .sort((a, b) => b.quantity - a.quantity)
-        .slice(0, 17);
+        .slice(0, 7);
 
       setWeeklySales(sortedSales);
     };
@@ -118,7 +118,7 @@ function WeeklyTopSales() {
 
   return (
     <div className="most-sales-products">
-      <h2>Haftalık En Çok Satan Ürünler</h2>
+      <h3>Weekly Best-Selling Products</h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={weeklySales}

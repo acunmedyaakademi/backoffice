@@ -199,6 +199,14 @@ h2:hover {
   gap: 30px;
 }
 
+.sales-container h3, .most-sales-products h3 {
+  font-family: Playfair Display;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 130%;
+  text-align: center;
+}
+
 .pie-chart, .most-sales-products {
   display: flex;
   flex-direction: column;
@@ -220,7 +228,7 @@ h2:hover {
 }
 
 .recharts-responsive-container {
-  width: 1500px !important;
+  width: 800px !important;
   margin: 0 auto;
 }
 
