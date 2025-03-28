@@ -209,15 +209,14 @@ export default function Dashboard() {
 
       {activePage === "dashboard" && (
         <div className="dashboard-container">
-          <h2>
-            Hoş geldin
+          <h2 className="welcome-text">
+            Hoşgeldin
             {user?.email ? `, ${user.email}` : ""}
-            👋
           </h2>
           <img
             src="/img/dashboard.png"
             alt="png"
-            style={{ width: "300px", height: "auto" }}
+            className="dashboard-img"
           />
         </div>
       )}
